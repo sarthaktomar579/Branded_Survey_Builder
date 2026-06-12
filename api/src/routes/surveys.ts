@@ -26,18 +26,39 @@ surveys.get('/', requireUser, async (c) => {
 // Create a new survey
 surveys.post('/', requireUser, async (c) => {
   const user = c.get('user')
-  const { title } = await c.req.json()
+  const { title, brand_color, brand_logo_url, questions } = await c.req.json()
   const id = crypto.randomUUID()
   const created_at = Date.now()
-  const brand_color = '#000000' // Default brand color
+  const color = brand_color || '#3b82f6'
 
-  await c.env.DB.prepare(
-    'INSERT INTO surveys (id, owner_id, title, brand_color, created_at) VALUES (?, ?, ?, ?, ?)',
+  const db = c.env.DB
+  const batch = []
+
+  batch.push(
+    db
+      .prepare(
+        'INSERT INTO surveys (id, owner_id, title, brand_color, brand_logo_url, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+      )
+      .bind(id, user.id, title, color, brand_logo_url || null, created_at),
   )
-    .bind(id, user.id, title, brand_color, created_at)
-    .run()
 
-  return c.json({ id, title, brand_color, created_at })
+  if (questions && questions.length > 0) {
+    for (let i = 0; i < questions.length; i++) {
+      const q = questions[i]
+      const qId = q.id || crypto.randomUUID()
+      batch.push(
+        db
+          .prepare(
+            'INSERT INTO questions (id, survey_id, type, title, options, order_index) VALUES (?, ?, ?, ?, ?, ?)',
+          )
+          .bind(qId, id, q.type, q.title, q.options ? JSON.stringify(q.options) : null, i),
+      )
+    }
+  }
+
+  await db.batch(batch)
+
+  return c.json({ id, title, brand_color: color, created_at })
 })
 
 // Get a specific survey (Public - no auth required to just view the survey)
