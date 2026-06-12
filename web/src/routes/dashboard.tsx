@@ -40,6 +40,8 @@ function Dashboard() {
     }
   }
 
+  const [toast, setToast] = useState('')
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!newTitle) return
@@ -55,7 +57,10 @@ function Dashboard() {
       })
       const data = await res.json()
       if (data.id) {
-        navigate({ to: `/dashboard/survey/${data.id}` as any }) // route params
+        setNewTitle('')
+        fetchSurveys()
+        setToast('Survey created successfully!')
+        setTimeout(() => setToast(''), 3000)
       }
     } catch (err) {
       console.error(err)
@@ -70,6 +75,24 @@ function Dashboard() {
 
   return (
     <div className="container animate-fade-in">
+      {toast && (
+        <div
+          className="animate-fade-in"
+          style={{
+            padding: '1rem',
+            background: 'rgba(16, 185, 129, 0.2)',
+            border: '1px solid #10b981',
+            color: '#34d399',
+            borderRadius: '12px',
+            marginBottom: '2rem',
+            textAlign: 'center',
+            fontWeight: 500,
+            backdropFilter: 'blur(8px)',
+          }}
+        >
+          {toast}
+        </div>
+      )}
       <div className="flex justify-between items-center mb-8">
         <div>
           <h2>Dashboard</h2>
