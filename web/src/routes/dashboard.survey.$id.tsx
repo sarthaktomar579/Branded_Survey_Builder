@@ -253,6 +253,12 @@ function SurveyBuilder() {
           <p className="text-muted text-center">No questions added yet.</p>
         )}
       </div>
+      
+      <div className="flex justify-end mt-8 mb-8">
+        <button onClick={handleSave} className="btn btn-primary" style={{ padding: '1rem 2rem', fontSize: '1.125rem' }} disabled={saving}>
+          {saving ? 'Saving...' : 'Save Survey'}
+        </button>
+      </div>
     </div>
   )
 }
