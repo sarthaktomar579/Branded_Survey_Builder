@@ -145,15 +145,30 @@ function SurveyBuilder() {
       }
     >
       {/* Full width header for extreme corners */}
-      <header className="flex justify-between items-center" style={{ padding: '1rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(0,0,0,0.2)' }}>
+      <header
+        className="flex justify-between items-center"
+        style={{
+          padding: '1rem 2rem',
+          borderBottom: '1px solid rgba(255,255,255,0.05)',
+          background: 'rgba(0,0,0,0.2)',
+        }}
+      >
         <div className="flex gap-4 items-center">
-          <div style={{ fontWeight: 800, fontSize: '1.75rem', background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.05em' }}>Forma</div>
+          <div
+            style={{
+              fontWeight: 800,
+              fontSize: '1.75rem',
+              background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              letterSpacing: '-0.05em',
+            }}
+          >
+            Forma
+          </div>
         </div>
         <div className="flex gap-4 items-center">
-          <Link
-            to="/dashboard/list"
-            className="btn btn-primary"
-          >
+          <Link to="/dashboard/list" className="btn btn-primary">
             My Surveys
           </Link>
           <button onClick={handleSave} className="btn btn-primary" disabled={saving}>
@@ -303,15 +318,17 @@ function SurveyBuilder() {
 
         <div className="flex justify-end mt-8 mb-8">
           {id !== 'new' && (
-            <Link
-              to="/s/$id"
-              params={{ id: survey.id }}
-              target="_blank"
+            <button
+              onClick={() => {
+                const url = `${window.location.origin}/s/${survey.id}`
+                navigator.clipboard.writeText(url)
+                alert('Survey URL copied to clipboard!')
+              }}
               className="btn btn-secondary"
               style={{ padding: '1rem 2rem', fontSize: '1.125rem' }}
             >
-              🔗 Open Share Link
-            </Link>
+              📋 Copy Survey URL
+            </button>
           )}
         </div>
       </div>

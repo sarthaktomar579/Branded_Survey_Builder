@@ -127,20 +127,22 @@ function Dashboard() {
                 >
                   Edit
                 </Link>
+                <button
+                  onClick={() => {
+                    const url = `${window.location.origin}/s/${survey.id}`
+                    navigator.clipboard.writeText(url)
+                    alert('Survey URL copied to clipboard!')
+                  }}
+                  className="btn btn-primary"
+                >
+                  Copy URL
+                </button>
                 <Link
                   to="/dashboard/responses/$id"
                   params={{ id: survey.id }}
                   className="btn btn-secondary"
                 >
                   Responses
-                </Link>
-                <Link
-                  to="/s/$id"
-                  params={{ id: survey.id }}
-                  className="btn btn-primary"
-                  target="_blank"
-                >
-                  Share
                 </Link>
               </div>
             </div>
