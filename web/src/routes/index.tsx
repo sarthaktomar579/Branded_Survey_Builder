@@ -45,7 +45,7 @@ function Login() {
       <div className="card" style={{ width: '100%', maxWidth: '400px' }}>
         <div className="text-center mb-8">
           <h1 style={{ marginBottom: '0.5rem' }}>DoCoDeGo</h1>
-          <p className="text-muted">Branded Survey Builder</p>
+          <p className="text-muted">Forma</p>
         </div>
         <form onSubmit={handleSubmit} className="flex-col gap-4">
           <div>
