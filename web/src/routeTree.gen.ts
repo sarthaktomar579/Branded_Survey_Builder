@@ -11,9 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as SIdRouteImport } from './routes/s.$id'
 import { Route as DashboardSurveyIdRouteImport } from './routes/dashboard.survey.$id'
-import { Route as DashboardSurveyIdResponsesRouteImport } from './routes/dashboard.survey.$id.responses'
+import { Route as DashboardResponsesIdRouteImport } from './routes/dashboard.responses.$id'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
@@ -25,6 +26,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const SIdRoute = SIdRouteImport.update({
   id: '/s/$id',
   path: '/s/$id',
@@ -35,34 +41,35 @@ const DashboardSurveyIdRoute = DashboardSurveyIdRouteImport.update({
   path: '/survey/$id',
   getParentRoute: () => DashboardRoute,
 } as any)
-const DashboardSurveyIdResponsesRoute =
-  DashboardSurveyIdResponsesRouteImport.update({
-    id: '/responses',
-    path: '/responses',
-    getParentRoute: () => DashboardSurveyIdRoute,
-  } as any)
+const DashboardResponsesIdRoute = DashboardResponsesIdRouteImport.update({
+  id: '/responses/$id',
+  path: '/responses/$id',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/s/$id': typeof SIdRoute
-  '/dashboard/survey/$id': typeof DashboardSurveyIdRouteWithChildren
-  '/dashboard/survey/$id/responses': typeof DashboardSurveyIdResponsesRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/responses/$id': typeof DashboardResponsesIdRoute
+  '/dashboard/survey/$id': typeof DashboardSurveyIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteWithChildren
   '/s/$id': typeof SIdRoute
-  '/dashboard/survey/$id': typeof DashboardSurveyIdRouteWithChildren
-  '/dashboard/survey/$id/responses': typeof DashboardSurveyIdResponsesRoute
+  '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/responses/$id': typeof DashboardResponsesIdRoute
+  '/dashboard/survey/$id': typeof DashboardSurveyIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/s/$id': typeof SIdRoute
-  '/dashboard/survey/$id': typeof DashboardSurveyIdRouteWithChildren
-  '/dashboard/survey/$id/responses': typeof DashboardSurveyIdResponsesRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/responses/$id': typeof DashboardResponsesIdRoute
+  '/dashboard/survey/$id': typeof DashboardSurveyIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -70,22 +77,24 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/s/$id'
+    | '/dashboard/'
+    | '/dashboard/responses/$id'
     | '/dashboard/survey/$id'
-    | '/dashboard/survey/$id/responses'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/dashboard'
     | '/s/$id'
+    | '/dashboard'
+    | '/dashboard/responses/$id'
     | '/dashboard/survey/$id'
-    | '/dashboard/survey/$id/responses'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
     | '/s/$id'
+    | '/dashboard/'
+    | '/dashboard/responses/$id'
     | '/dashboard/survey/$id'
-    | '/dashboard/survey/$id/responses'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -110,6 +119,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/s/$id': {
       id: '/s/$id'
       path: '/s/$id'
@@ -124,33 +140,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSurveyIdRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/dashboard/survey/$id/responses': {
-      id: '/dashboard/survey/$id/responses'
-      path: '/responses'
-      fullPath: '/dashboard/survey/$id/responses'
-      preLoaderRoute: typeof DashboardSurveyIdResponsesRouteImport
-      parentRoute: typeof DashboardSurveyIdRoute
+    '/dashboard/responses/$id': {
+      id: '/dashboard/responses/$id'
+      path: '/responses/$id'
+      fullPath: '/dashboard/responses/$id'
+      preLoaderRoute: typeof DashboardResponsesIdRouteImport
+      parentRoute: typeof DashboardRoute
     }
   }
 }
 
-interface DashboardSurveyIdRouteChildren {
-  DashboardSurveyIdResponsesRoute: typeof DashboardSurveyIdResponsesRoute
-}
-
-const DashboardSurveyIdRouteChildren: DashboardSurveyIdRouteChildren = {
-  DashboardSurveyIdResponsesRoute: DashboardSurveyIdResponsesRoute,
-}
-
-const DashboardSurveyIdRouteWithChildren =
-  DashboardSurveyIdRoute._addFileChildren(DashboardSurveyIdRouteChildren)
-
 interface DashboardRouteChildren {
-  DashboardSurveyIdRoute: typeof DashboardSurveyIdRouteWithChildren
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardResponsesIdRoute: typeof DashboardResponsesIdRoute
+  DashboardSurveyIdRoute: typeof DashboardSurveyIdRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
-  DashboardSurveyIdRoute: DashboardSurveyIdRouteWithChildren,
+  DashboardIndexRoute: DashboardIndexRoute,
+  DashboardResponsesIdRoute: DashboardResponsesIdRoute,
+  DashboardSurveyIdRoute: DashboardSurveyIdRoute,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(

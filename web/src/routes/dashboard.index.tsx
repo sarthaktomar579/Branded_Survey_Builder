@@ -142,7 +142,7 @@ function Dashboard() {
                 <Link to="/dashboard/survey/$id" params={{ id: survey.id }} className="btn btn-secondary">
                   Edit
                 </Link>
-                <Link to="/dashboard/survey/$id/responses" params={{ id: survey.id }} className="btn btn-secondary">
+                <Link to="/dashboard/responses/$id" params={{ id: survey.id }} className="btn btn-secondary">
                   Responses
                 </Link>
                 <Link to="/s/$id" params={{ id: survey.id }} className="btn btn-primary" target="_blank">
