@@ -13,6 +13,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as SIdRouteImport } from './routes/s.$id'
+import { Route as DashboardListRouteImport } from './routes/dashboard.list'
 import { Route as DashboardSurveyIdRouteImport } from './routes/dashboard.survey.$id'
 import { Route as DashboardResponsesIdRouteImport } from './routes/dashboard.responses.$id'
 
@@ -36,6 +37,11 @@ const SIdRoute = SIdRouteImport.update({
   path: '/s/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardListRoute = DashboardListRouteImport.update({
+  id: '/list',
+  path: '/list',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardSurveyIdRoute = DashboardSurveyIdRouteImport.update({
   id: '/survey/$id',
   path: '/survey/$id',
@@ -50,6 +56,7 @@ const DashboardResponsesIdRoute = DashboardResponsesIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard/list': typeof DashboardListRoute
   '/s/$id': typeof SIdRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/responses/$id': typeof DashboardResponsesIdRoute
@@ -57,6 +64,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard/list': typeof DashboardListRoute
   '/s/$id': typeof SIdRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/responses/$id': typeof DashboardResponsesIdRoute
@@ -66,6 +74,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard/list': typeof DashboardListRoute
   '/s/$id': typeof SIdRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/responses/$id': typeof DashboardResponsesIdRoute
@@ -76,6 +85,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/dashboard/list'
     | '/s/$id'
     | '/dashboard/'
     | '/dashboard/responses/$id'
@@ -83,6 +93,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/dashboard/list'
     | '/s/$id'
     | '/dashboard'
     | '/dashboard/responses/$id'
@@ -91,6 +102,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard'
+    | '/dashboard/list'
     | '/s/$id'
     | '/dashboard/'
     | '/dashboard/responses/$id'
@@ -133,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/list': {
+      id: '/dashboard/list'
+      path: '/list'
+      fullPath: '/dashboard/list'
+      preLoaderRoute: typeof DashboardListRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/survey/$id': {
       id: '/dashboard/survey/$id'
       path: '/survey/$id'
@@ -151,12 +170,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface DashboardRouteChildren {
+  DashboardListRoute: typeof DashboardListRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardResponsesIdRoute: typeof DashboardResponsesIdRoute
   DashboardSurveyIdRoute: typeof DashboardSurveyIdRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardListRoute: DashboardListRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardResponsesIdRoute: DashboardResponsesIdRoute,
   DashboardSurveyIdRoute: DashboardSurveyIdRoute,

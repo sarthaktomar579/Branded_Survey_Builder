@@ -11,9 +11,17 @@ function SurveyBuilder() {
   const { token, loading, user } = useAuth()
   const navigate = useNavigate()
 
-  const [survey, setSurvey] = useState<any>(null)
+  const [survey, setSurvey] = useState<any>(
+    id === 'new'
+      ? {
+          title: 'Untitled Survey',
+          brand_color: '#3b82f6',
+          brand_logo_url: '',
+        }
+      : null,
+  )
   const [questions, setQuestions] = useState<any[]>([])
-  const [fetching, setFetching] = useState(true)
+  const [fetching, setFetching] = useState(id !== 'new')
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
@@ -21,7 +29,13 @@ function SurveyBuilder() {
   }, [user, loading, navigate])
 
   useEffect(() => {
-    if (token) fetchSurvey()
+    if (token) {
+      if (id === 'new') {
+        setFetching(false)
+      } else {
+        fetchSurvey()
+      }
+    }
   }, [token, id])
 
   const fetchSurvey = async () => {
@@ -42,20 +56,39 @@ function SurveyBuilder() {
   const handleSave = async () => {
     setSaving(true)
     try {
-      await fetch(`http://localhost:8787/api/surveys/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: survey.title,
-          brand_color: survey.brand_color,
-          brand_logo_url: survey.brand_logo_url,
-          questions,
-        }),
-      })
-      alert('Survey saved successfully!')
+      if (id === 'new') {
+        const res = await fetch(`http://localhost:8787/api/surveys`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            title: survey.title,
+            brand_color: survey.brand_color,
+            brand_logo_url: survey.brand_logo_url,
+            questions,
+          }),
+        })
+        const data = await res.json()
+        alert('Survey created successfully!')
+        navigate({ to: '/dashboard/survey/$id', params: { id: data.id } })
+      } else {
+        await fetch(`http://localhost:8787/api/surveys/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            title: survey.title,
+            brand_color: survey.brand_color,
+            brand_logo_url: survey.brand_logo_url,
+            questions,
+          }),
+        })
+        alert('Survey saved successfully!')
+      }
     } catch (err) {
       console.error(err)
       alert('Failed to save survey')
@@ -105,14 +138,26 @@ function SurveyBuilder() {
       style={{ '--brand-primary': survey.brand_color } as any}
     >
       <div className="flex justify-between items-center mb-4">
-        <div>
+        <div className="flex gap-4 items-center">
           <Link
-            to="/dashboard"
+            to="/dashboard/list"
             className="btn btn-secondary"
-            style={{ padding: '0.25rem 0.5rem', marginBottom: '1rem', display: 'inline-block' }}
+            style={{ padding: '0.25rem 0.5rem', display: 'inline-block' }}
           >
-            &larr; Back
+            &larr; My Surveys
           </Link>
+          <div
+            style={{
+              fontWeight: 800,
+              fontSize: '1.5rem',
+              background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              letterSpacing: '-0.05em',
+            }}
+          >
+            Forma
+          </div>
           <h2>Builder</h2>
         </div>
         <button onClick={handleSave} className="btn btn-primary" disabled={saving}>
@@ -253,11 +298,19 @@ function SurveyBuilder() {
           <p className="text-muted text-center">No questions added yet.</p>
         )}
       </div>
-      
+
       <div className="flex justify-end mt-8 mb-8">
-        <Link to="/s/$id" params={{ id: survey.id }} target="_blank" className="btn btn-secondary" style={{ padding: '1rem 2rem', fontSize: '1.125rem' }}>
-          🔗 Open Share Link
-        </Link>
+        {id !== 'new' && (
+          <Link
+            to="/s/$id"
+            params={{ id: survey.id }}
+            target="_blank"
+            className="btn btn-secondary"
+            style={{ padding: '1rem 2rem', fontSize: '1.125rem' }}
+          >
+            🔗 Open Share Link
+          </Link>
+        )}
       </div>
     </div>
   )
