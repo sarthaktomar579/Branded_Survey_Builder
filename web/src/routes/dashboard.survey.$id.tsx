@@ -134,25 +134,29 @@ function SurveyBuilder() {
 
   return (
     <div
-      className="container animate-fade-in"
-      style={{ '--brand-primary': survey.brand_color } as any}
+      className="animate-fade-in"
+      style={{ '--brand-primary': survey.brand_color, minHeight: '100vh', display: 'flex', flexDirection: 'column' } as any}
     >
-      <div className="flex justify-between items-center mb-4">
+      {/* Full width header for extreme corners */}
+      <header className="flex justify-between items-center" style={{ padding: '1rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(0,0,0,0.2)' }}>
         <div className="flex gap-4 items-center">
           <div style={{ fontWeight: 800, fontSize: '1.75rem', background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.05em' }}>Forma</div>
+          <span className="text-muted" style={{ fontSize: '1.1rem', fontWeight: 500 }}>Builder</span>
+        </div>
+        <div className="flex gap-4 items-center">
           <Link
             to="/dashboard/list"
             className="btn btn-primary"
-            style={{ padding: '0.25rem 0.5rem', display: 'inline-block' }}
           >
-            &larr; My Surveys
+            My Surveys
           </Link>
-          <h2>Builder</h2>
+          <button onClick={handleSave} className="btn btn-primary" disabled={saving}>
+            {saving ? 'Saving...' : 'Save Survey'}
+          </button>
         </div>
-        <button onClick={handleSave} className="btn btn-primary" disabled={saving}>
-          {saving ? 'Saving...' : 'Save Survey'}
-        </button>
-      </div>
+      </header>
+
+      <div className="container" style={{ flex: 1, paddingTop: '2rem' }}>
 
       <div className="card mb-8">
         <h3>Survey Settings</h3>
