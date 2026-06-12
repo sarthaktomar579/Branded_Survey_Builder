@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { useAuth } from '../../AuthContext'
+import { useAuth } from '../AuthContext'
 
 export const Route = createFileRoute('/dashboard/survey/$id/responses')({
   component: SurveyResponses,
