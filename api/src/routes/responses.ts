@@ -27,13 +27,16 @@ responses.post('/:surveyId', async (c) => {
 
   const batch = []
   batch.push(
-    db.prepare('INSERT INTO responses (id, survey_id, submitted_at) VALUES (?, ?, ?)').bind(responseId, surveyId, submittedAt)
+    db
+      .prepare('INSERT INTO responses (id, survey_id, submitted_at) VALUES (?, ?, ?)')
+      .bind(responseId, surveyId, submittedAt),
   )
 
   for (const answer of answers) {
     batch.push(
-      db.prepare('INSERT INTO answers (id, response_id, question_id, value) VALUES (?, ?, ?, ?)')
-        .bind(crypto.randomUUID(), responseId, answer.question_id, answer.value)
+      db
+        .prepare('INSERT INTO answers (id, response_id, question_id, value) VALUES (?, ?, ?, ?)')
+        .bind(crypto.randomUUID(), responseId, answer.question_id, answer.value),
     )
   }
 
@@ -50,14 +53,23 @@ responses.get('/:surveyId', requireUser, async (c) => {
   const db = c.env.DB
 
   // Verify ownership
-  const survey = await db.prepare('SELECT * FROM surveys WHERE id = ? AND owner_id = ?').bind(surveyId, user.id).first()
+  const survey = await db
+    .prepare('SELECT * FROM surveys WHERE id = ? AND owner_id = ?')
+    .bind(surveyId, user.id)
+    .first()
   if (!survey) return c.json({ error: 'Not found or unauthorized' }, 404)
 
-  const { results: responsesList } = await db.prepare('SELECT * FROM responses WHERE survey_id = ? ORDER BY submitted_at DESC').bind(surveyId).all()
+  const { results: responsesList } = await db
+    .prepare('SELECT * FROM responses WHERE survey_id = ? ORDER BY submitted_at DESC')
+    .bind(surveyId)
+    .all()
 
-  const { results: answersList } = await db.prepare(
-    `SELECT a.* FROM answers a JOIN responses r ON a.response_id = r.id WHERE r.survey_id = ?`
-  ).bind(surveyId).all()
+  const { results: answersList } = await db
+    .prepare(
+      `SELECT a.* FROM answers a JOIN responses r ON a.response_id = r.id WHERE r.survey_id = ?`,
+    )
+    .bind(surveyId)
+    .all()
 
   // Format responses
   const formattedResponses = responsesList.map((res: any) => {
@@ -65,7 +77,7 @@ responses.get('/:surveyId', requireUser, async (c) => {
     return {
       id: res.id,
       submitted_at: res.submitted_at,
-      answers: resAnswers
+      answers: resAnswers,
     }
   })
 

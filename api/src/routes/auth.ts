@@ -10,10 +10,10 @@ auth.post('/login', async (c) => {
   if (!email) return c.json({ error: 'Email is required' }, 400)
 
   const db = c.env.DB
-  
+
   // Try to find the user
   let user = await db.prepare('SELECT * FROM users WHERE email = ?').bind(email).first()
-  
+
   if (!user) {
     // Create new user
     const id = crypto.randomUUID()
@@ -31,9 +31,9 @@ auth.get('/me', async (c) => {
 
   const db = c.env.DB
   const user = await db.prepare('SELECT * FROM users WHERE id = ?').bind(token).first()
-  
+
   if (!user) return c.json({ error: 'Unauthorized' }, 401)
-  
+
   return c.json({ user })
 })
 

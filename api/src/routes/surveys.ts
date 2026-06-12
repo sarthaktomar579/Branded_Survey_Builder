@@ -15,7 +15,11 @@ const requireUser = async (c: any, next: any) => {
 // Get all surveys for current user
 surveys.get('/', requireUser, async (c) => {
   const user = c.get('user')
-  const { results } = await c.env.DB.prepare('SELECT * FROM surveys WHERE owner_id = ? ORDER BY created_at DESC').bind(user.id).all()
+  const { results } = await c.env.DB.prepare(
+    'SELECT * FROM surveys WHERE owner_id = ? ORDER BY created_at DESC',
+  )
+    .bind(user.id)
+    .all()
   return c.json({ surveys: results })
 })
 
@@ -26,10 +30,12 @@ surveys.post('/', requireUser, async (c) => {
   const id = crypto.randomUUID()
   const created_at = Date.now()
   const brand_color = '#000000' // Default brand color
-  
+
   await c.env.DB.prepare(
-    'INSERT INTO surveys (id, owner_id, title, brand_color, created_at) VALUES (?, ?, ?, ?, ?)'
-  ).bind(id, user.id, title, brand_color, created_at).run()
+    'INSERT INTO surveys (id, owner_id, title, brand_color, created_at) VALUES (?, ?, ?, ?, ?)',
+  )
+    .bind(id, user.id, title, brand_color, created_at)
+    .run()
 
   return c.json({ id, title, brand_color, created_at })
 })
@@ -37,16 +43,20 @@ surveys.post('/', requireUser, async (c) => {
 // Get a specific survey (Public - no auth required to just view the survey)
 surveys.get('/:id', async (c) => {
   const id = c.req.param('id')
-  
+
   const survey = await c.env.DB.prepare('SELECT * FROM surveys WHERE id = ?').bind(id).first()
   if (!survey) return c.json({ error: 'Survey not found' }, 404)
 
-  const { results: questions } = await c.env.DB.prepare('SELECT * FROM questions WHERE survey_id = ? ORDER BY order_index ASC').bind(id).all()
+  const { results: questions } = await c.env.DB.prepare(
+    'SELECT * FROM questions WHERE survey_id = ? ORDER BY order_index ASC',
+  )
+    .bind(id)
+    .all()
 
   // Parse options for multiple_choice questions
   const parsedQuestions = questions.map((q: any) => ({
     ...q,
-    options: q.options ? JSON.parse(q.options) : []
+    options: q.options ? JSON.parse(q.options) : [],
   }))
 
   return c.json({ survey, questions: parsedQuestions })
@@ -61,7 +71,10 @@ surveys.put('/:id', requireUser, async (c) => {
   const db = c.env.DB
 
   // Verify ownership
-  const survey = await db.prepare('SELECT * FROM surveys WHERE id = ? AND owner_id = ?').bind(surveyId, user.id).first()
+  const survey = await db
+    .prepare('SELECT * FROM surveys WHERE id = ? AND owner_id = ?')
+    .bind(surveyId, user.id)
+    .first()
   if (!survey) return c.json({ error: 'Not found or unauthorized' }, 404)
 
   // Start batch for atomic update
@@ -69,22 +82,24 @@ surveys.put('/:id', requireUser, async (c) => {
 
   // Update survey details
   batch.push(
-    db.prepare('UPDATE surveys SET title = ?, brand_color = ?, brand_logo_url = ? WHERE id = ?')
-      .bind(title, brand_color, brand_logo_url || null, surveyId)
+    db
+      .prepare('UPDATE surveys SET title = ?, brand_color = ?, brand_logo_url = ? WHERE id = ?')
+      .bind(title, brand_color, brand_logo_url || null, surveyId),
   )
 
   // For simplicity, we delete all existing questions and insert the new ones
-  batch.push(
-    db.prepare('DELETE FROM questions WHERE survey_id = ?').bind(surveyId)
-  )
+  batch.push(db.prepare('DELETE FROM questions WHERE survey_id = ?').bind(surveyId))
 
   if (questions && questions.length > 0) {
     for (let i = 0; i < questions.length; i++) {
       const q = questions[i]
       const qId = q.id || crypto.randomUUID()
       batch.push(
-        db.prepare('INSERT INTO questions (id, survey_id, type, title, options, order_index) VALUES (?, ?, ?, ?, ?, ?)')
-          .bind(qId, surveyId, q.type, q.title, q.options ? JSON.stringify(q.options) : null, i)
+        db
+          .prepare(
+            'INSERT INTO questions (id, survey_id, type, title, options, order_index) VALUES (?, ?, ?, ?, ?, ?)',
+          )
+          .bind(qId, surveyId, q.type, q.title, q.options ? JSON.stringify(q.options) : null, i),
       )
     }
   }

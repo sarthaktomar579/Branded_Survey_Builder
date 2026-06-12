@@ -9,38 +9,100 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SIdRouteImport } from './routes/s.$id'
+import { Route as DashboardSurveyIdRouteImport } from './routes/dashboard.survey.$id'
+import { Route as DashboardSurveyIdResponsesRouteImport } from './routes/dashboard.survey.$id.responses'
 
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SIdRoute = SIdRouteImport.update({
+  id: '/s/$id',
+  path: '/s/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardSurveyIdRoute = DashboardSurveyIdRouteImport.update({
+  id: '/survey/$id',
+  path: '/survey/$id',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSurveyIdResponsesRoute =
+  DashboardSurveyIdResponsesRouteImport.update({
+    id: '/responses',
+    path: '/responses',
+    getParentRoute: () => DashboardSurveyIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/s/$id': typeof SIdRoute
+  '/dashboard/survey/$id': typeof DashboardSurveyIdRouteWithChildren
+  '/dashboard/survey/$id/responses': typeof DashboardSurveyIdResponsesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/s/$id': typeof SIdRoute
+  '/dashboard/survey/$id': typeof DashboardSurveyIdRouteWithChildren
+  '/dashboard/survey/$id/responses': typeof DashboardSurveyIdResponsesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/s/$id': typeof SIdRoute
+  '/dashboard/survey/$id': typeof DashboardSurveyIdRouteWithChildren
+  '/dashboard/survey/$id/responses': typeof DashboardSurveyIdResponsesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/s/$id'
+    | '/dashboard/survey/$id'
+    | '/dashboard/survey/$id/responses'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/s/$id'
+    | '/dashboard/survey/$id'
+    | '/dashboard/survey/$id/responses'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/s/$id'
+    | '/dashboard/survey/$id'
+    | '/dashboard/survey/$id/responses'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
+  SIdRoute: typeof SIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +110,57 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/s/$id': {
+      id: '/s/$id'
+      path: '/s/$id'
+      fullPath: '/s/$id'
+      preLoaderRoute: typeof SIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/survey/$id': {
+      id: '/dashboard/survey/$id'
+      path: '/survey/$id'
+      fullPath: '/dashboard/survey/$id'
+      preLoaderRoute: typeof DashboardSurveyIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/survey/$id/responses': {
+      id: '/dashboard/survey/$id/responses'
+      path: '/responses'
+      fullPath: '/dashboard/survey/$id/responses'
+      preLoaderRoute: typeof DashboardSurveyIdResponsesRouteImport
+      parentRoute: typeof DashboardSurveyIdRoute
+    }
   }
 }
 
+interface DashboardSurveyIdRouteChildren {
+  DashboardSurveyIdResponsesRoute: typeof DashboardSurveyIdResponsesRoute
+}
+
+const DashboardSurveyIdRouteChildren: DashboardSurveyIdRouteChildren = {
+  DashboardSurveyIdResponsesRoute: DashboardSurveyIdResponsesRoute,
+}
+
+const DashboardSurveyIdRouteWithChildren =
+  DashboardSurveyIdRoute._addFileChildren(DashboardSurveyIdRouteChildren)
+
+interface DashboardRouteChildren {
+  DashboardSurveyIdRoute: typeof DashboardSurveyIdRouteWithChildren
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardSurveyIdRoute: DashboardSurveyIdRouteWithChildren,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRouteWithChildren,
+  SIdRoute: SIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
