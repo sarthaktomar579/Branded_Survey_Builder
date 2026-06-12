@@ -255,9 +255,9 @@ function SurveyBuilder() {
       </div>
       
       <div className="flex justify-end mt-8 mb-8">
-        <button onClick={handleSave} className="btn btn-primary" style={{ padding: '1rem 2rem', fontSize: '1.125rem' }} disabled={saving}>
-          {saving ? 'Saving...' : 'Save Survey'}
-        </button>
+        <Link to="/s/$id" params={{ id: survey.id }} target="_blank" className="btn btn-secondary" style={{ padding: '1rem 2rem', fontSize: '1.125rem' }}>
+          🔗 Open Share Link
+        </Link>
       </div>
     </div>
   )
