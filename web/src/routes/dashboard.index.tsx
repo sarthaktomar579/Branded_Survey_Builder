@@ -57,10 +57,7 @@ function Dashboard() {
       })
       const data = await res.json()
       if (data.id) {
-        setNewTitle('')
-        fetchSurveys()
-        setToast('Survey created successfully!')
-        setTimeout(() => setToast(''), 3000)
+        navigate({ to: '/dashboard/survey/$id', params: { id: data.id } })
       }
     } catch (err) {
       console.error(err)
