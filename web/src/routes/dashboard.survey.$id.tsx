@@ -8,7 +8,7 @@ export const Route = createFileRoute('/dashboard/survey/$id')({
 
 function SurveyBuilder() {
   const { id } = Route.useParams()
-  const { token, loading, user } = useAuth()
+  const { token, loading, user, logout } = useAuth()
   const navigate = useNavigate()
 
   const [survey, setSurvey] = useState<any>(
@@ -158,6 +158,9 @@ function SurveyBuilder() {
           </Link>
           <button onClick={handleSave} className="btn btn-primary" disabled={saving}>
             {saving ? 'Saving...' : 'Save Survey'}
+          </button>
+          <button onClick={logout} className="btn btn-secondary">
+            Sign Out
           </button>
         </div>
       </header>
