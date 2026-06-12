@@ -145,33 +145,15 @@ function SurveyBuilder() {
       }
     >
       {/* Full width header for extreme corners */}
-      <header
-        className="flex justify-between items-center"
-        style={{
-          padding: '1rem 2rem',
-          borderBottom: '1px solid rgba(255,255,255,0.05)',
-          background: 'rgba(0,0,0,0.2)',
-        }}
-      >
+      <header className="flex justify-between items-center" style={{ padding: '1rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(0,0,0,0.2)' }}>
         <div className="flex gap-4 items-center">
-          <div
-            style={{
-              fontWeight: 800,
-              fontSize: '1.75rem',
-              background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              letterSpacing: '-0.05em',
-            }}
-          >
-            Forma
-          </div>
-          <span className="text-muted" style={{ fontSize: '1.1rem', fontWeight: 500 }}>
-            Builder
-          </span>
+          <div style={{ fontWeight: 800, fontSize: '1.75rem', background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.05em' }}>Forma</div>
         </div>
         <div className="flex gap-4 items-center">
-          <Link to="/dashboard/list" className="btn btn-primary">
+          <Link
+            to="/dashboard/list"
+            className="btn btn-primary"
+          >
             My Surveys
           </Link>
           <button onClick={handleSave} className="btn btn-primary" disabled={saving}>
@@ -181,6 +163,7 @@ function SurveyBuilder() {
       </header>
 
       <div className="container" style={{ flex: 1, paddingTop: '2rem' }}>
+        <h2 className="mb-4">Builder</h2>
         <div className="card mb-8">
           <h3>Survey Settings</h3>
           <div className="flex-col gap-4 mt-4">
