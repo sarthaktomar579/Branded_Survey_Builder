@@ -139,25 +139,14 @@ function SurveyBuilder() {
     >
       <div className="flex justify-between items-center mb-4">
         <div className="flex gap-4 items-center">
+          <div style={{ fontWeight: 800, fontSize: '1.75rem', background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.05em' }}>Forma</div>
           <Link
             to="/dashboard/list"
-            className="btn btn-secondary"
+            className="btn btn-primary"
             style={{ padding: '0.25rem 0.5rem', display: 'inline-block' }}
           >
             &larr; My Surveys
           </Link>
-          <div
-            style={{
-              fontWeight: 800,
-              fontSize: '1.5rem',
-              background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              letterSpacing: '-0.05em',
-            }}
-          >
-            Forma
-          </div>
           <h2>Builder</h2>
         </div>
         <button onClick={handleSave} className="btn btn-primary" disabled={saving}>

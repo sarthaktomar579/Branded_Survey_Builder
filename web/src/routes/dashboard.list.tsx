@@ -100,22 +100,6 @@ function Dashboard() {
         </button>
       </div>
 
-      <div className="card mb-8">
-        <h3 className="mb-4">Create New Survey</h3>
-        <form onSubmit={handleCreate} className="flex gap-4 items-center">
-          <input
-            type="text"
-            placeholder="Survey Title..."
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            style={{ flex: 1 }}
-          />
-          <button type="submit" className="btn btn-primary" disabled={creating || !newTitle}>
-            {creating ? 'Creating...' : 'Create'}
-          </button>
-        </form>
-      </div>
-
       <h3>Your Surveys</h3>
       {surveys.length === 0 ? (
         <p className="text-muted mt-4">You haven't created any surveys yet.</p>
